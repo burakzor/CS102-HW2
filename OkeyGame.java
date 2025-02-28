@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class OkeyGame {
 
     Player[] players;
@@ -33,7 +35,14 @@ public class OkeyGame {
      * this method assumes the tiles are already shuffled
      */
     public void distributeTilesToPlayers() {
-
+        for(int j=1; j<=3; j++)
+        {
+            for(int i=0; i<15; i++)
+            {
+                players[0].getTiles()[i] = tiles[i];
+                players[j].getTiles()[i] = tiles[i+1+(14*j)];
+            }   
+        } 
     }
 
     /*
@@ -58,7 +67,14 @@ public class OkeyGame {
      * TODO: should randomly shuffle the tiles array before game starts -------------- Kaptan
      */
     public void shuffleTiles() {
-
+        Random rand = new Random();
+        for (int i = tiles.length - 1; i > 0; i--)
+        {
+            int j = rand.nextInt(i + 1);
+            Tile temp = tiles[i];
+            tiles[i] = tiles[j];
+            tiles[j] = temp;
+        }
     }
 
     /*
@@ -96,7 +112,13 @@ public class OkeyGame {
      * that player's tiles
      */
     public void discardTile(int tileIndex) {
-
+        lastDiscardedTile = players[currentPlayerIndex].getTiles()[tileIndex];
+        players[currentPlayerIndex].getTiles()[tileIndex] = null;
+        for(int i=tileIndex; i<players[currentPlayerIndex].getTiles().length - 1; i++)
+        {
+            players[currentPlayerIndex].getTiles()[i] = players[currentPlayerIndex].getTiles()[i+1];
+        }
+        players[currentPlayerIndex].getTiles()[players[currentPlayerIndex].getTiles().length - 1] = null;
     }
 
     public void displayDiscardInformation() {
