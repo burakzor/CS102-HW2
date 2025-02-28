@@ -55,7 +55,7 @@ public class OkeyGame {
     }
 
     /*
-     * TODO: should randomly shuffle the tiles array before game starts -------------- Kaptan
+     * TODO: should randomly shuffle the tiles array before game starts -------------- Yakup
      */
     public void shuffleTiles() {
 

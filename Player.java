@@ -26,7 +26,7 @@ public class Player {
     }
 
     /*
-     * TODO: checks if this player's hand satisfies the winning condition ------------Yakup
+     * TODO: checks if this player's hand satisfies the winning condition ------------Kaptan
      * to win this player should have 3 chains of length 4, extra tiles
      * does not disturb the winning condition
      * @return
