@@ -1,12 +1,16 @@
+import java.util.ArrayList;
+
 public class Player {
     String playerName;
     Tile[] playerTiles;
     int numberOfTiles;
+    ArrayList<Tile> notDrawedTiles; // Added to discardTileForComputer()
 
     public Player(String name) {
         setName(name);
         playerTiles = new Tile[15]; // there are at most 15 tiles a player owns at any time
         numberOfTiles = 0; // currently this player owns 0 tiles, will pick tiles at the beggining of the game
+        notDrawedTiles = new ArrayList<Tile>(); // Added to discardTileForComputer()
     }
 
     /*
@@ -51,6 +55,36 @@ public class Player {
             System.out.print(playerTiles[i].toString() + " ");
         }
         System.out.println();
+    }
+
+    // Added to discardTileForComputer()
+    public void addToNotDrawedTiles(Tile aTile) {
+        notDrawedTiles.add(aTile);
+    }
+
+    public int getATileIndex(int colorIndex, int number) {
+        int index = 0;
+
+        char color = Tile.COLORS[colorIndex];
+        for (int i = 0; i < playerTiles.length; i++) {
+            Tile aTile = playerTiles[i];
+            if (aTile.getColor() == color && aTile.getValue() == number) index = i;
+        }
+
+        return index;
+    }
+
+    public ArrayList<Tile> getNotDrawedTiles() {
+        return notDrawedTiles;
+    }
+
+    public ArrayList<Integer> getNotDrawedTileValues() {
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        for (Tile aTile : notDrawedTiles) {
+            if (!values.contains(aTile.getColor())) values.add(aTile.getValue());
+        }
+
+        return values;
     }
 
     public Tile[] getTiles() {

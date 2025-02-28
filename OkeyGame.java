@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class OkeyGame {
@@ -91,23 +93,100 @@ public class OkeyGame {
      * - picking from the lastDiscardedTile using getLastDiscardedTile()
      * You should consider if the discarded tile is useful for the computer in
      * the current status. Print whether computer picks from tiles or discarded ones.
+     * +++ Eğer lastDiscardedTile çekilmediyse (getTopFile() kullandıysan) player.addToNotDrawedTiles(Tile aTile) methodunu çağırıp çekmediğin
+     *     tile'ı parametreye yazar mısın (ekler misin)? !!!!! "Tile" reference yüklenmesi lazım !!!!!  --------Buraktan özel istek
      */
     public void pickTileForComputer() {
 
     }
 
     /*
-     * TODO: Current computer player will discard the least useful tile. ---------------Burak
+     * TODO: Current computer player will discard the least useful tile. ---------------Burak ***Done
      * this method should print what tile is discarded since it should be
      * known by other players. You may first discard duplicates and then
      * the single tiles and tiles that contribute to the smallest chains.
      */
+
+    public static int decideWhichTileToDiscard(ArrayList<Integer> indexesToDiscard, Tile[] playerTiles,
+                                               ArrayList<Tile> notDrawedTiles, ArrayList<Integer> tileValues) {
+        int discardIndex = 0;
+        boolean found = false;
+
+        for (int index : indexesToDiscard) {
+            if (notDrawedTiles.contains(playerTiles[index])){
+                found = true;
+                discardIndex = index;
+            } else if (tileValues.contains(playerTiles[index].getValue())){
+                found = true;
+                discardIndex = index;
+            }
+        }
+
+        if (!found) discardIndex = (int)(Math.random() * indexesToDiscard.size());
+
+        return discardIndex;
+    }
     public void discardTileForComputer() {
+        Player currentPlayer = players[currentPlayerIndex];
+        Player nextPlayer = players[currentPlayerIndex + 1];
+        int[][] diffTiles = new int[4][7]; //[K-R-B-Y][1-2-3-4-5-6-7]
+        int[] diffValueTiles = new int[7]; //[1-2-3-4-5-6-7]
+        ArrayList<Integer> duplicateTiles = new ArrayList<Integer>();
+        ArrayList<Integer> otherTiles = new ArrayList<Integer>();
+
+
+        for (Tile aTile : currentPlayer.getTiles()) {
+            int colorIndex;
+            if (aTile.getColor() == 'K') colorIndex = 0;
+            else if (aTile.getColor() == 'R') colorIndex = 1;
+            else if (aTile.getColor() == 'B') colorIndex = 2;
+            else colorIndex = 3;
+            diffTiles[colorIndex][aTile.getValue() - 1] += 1;
+            diffValueTiles[aTile.getValue() - 1] += 1;
+        }
+
+        int maxCount = 0;
+        for (int[] tiles : diffTiles) {
+            for (int count : tiles) maxCount = Math.max(count, maxCount);
+        }
+
+        for (int colorIndex = 0; colorIndex < diffTiles.length; colorIndex++) {
+            for (int number = 0; number < diffTiles[colorIndex].length; number++) {
+                if (diffTiles[colorIndex][number] == maxCount) {
+                    duplicateTiles.add(currentPlayer.getATileIndex(colorIndex, number + 1));
+                }
+            }
+        }
+
+        maxCount = 0;
+        for (int count : diffValueTiles) {
+            maxCount = Math.max(maxCount, count);
+        }
+
+        for (int number = 0; number < diffValueTiles.length; number++) {
+            if (diffValueTiles[number] == maxCount) {
+                int random = (int)(Math.random() * 4);
+                otherTiles.add(currentPlayer.getATileIndex(random, number + 1));
+            }
+        }
+
+        if (duplicateTiles.size() == 0) {
+            int tileIndex = decideWhichTileToDiscard(otherTiles, currentPlayer.getTiles(),
+                    nextPlayer.getNotDrawedTiles(), nextPlayer.getNotDrawedTileValues());
+
+            currentPlayer.getAndRemoveTile(tileIndex);
+        } else if (duplicateTiles.size() == 1) {
+            currentPlayer.getAndRemoveTile(duplicateTiles.get(0));
+        } else {
+            int tileIndex = decideWhichTileToDiscard(duplicateTiles, currentPlayer.getTiles(),
+                    nextPlayer.getNotDrawedTiles(), nextPlayer.getNotDrawedTileValues());
+            currentPlayer.getAndRemoveTile(tileIndex);
+        }
 
     }
 
     /*
-     * TODO: discards the current player's tile at given index. -----------------Burak
+     * TODO: discards the current player's tile at given index. -----------------Yakup
      * this should set lastDiscardedTile variable and remove that tile from
      * that player's tiles
      */

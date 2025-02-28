@@ -2,6 +2,7 @@ public class Tile {
     
     int value;
     char color;
+    public static final char[] COLORS = {'K', 'R', 'B', 'Y'}; // Added to discardTileForComputer()
 
     /*
      * Creates a tile using the given color and value, colors are represented
