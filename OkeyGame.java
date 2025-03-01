@@ -49,11 +49,14 @@ public class OkeyGame {
 
     /*
      * TODO: get the last discarded tile for the current player --------------------Yusuf
-     * (this simulates picking up the tile discarded by the previous player)
-     * it should return the toString method of the tile so that we can print what we picked
+    * (this simulates picking up the tile discarded by the previous player)
+      * it should return the toString method of the tile so that we can print what we picked
      */
     public String getLastDiscardedTile() {
-        return null;
+        Player currentPlayer = players[currentPlayerIndex];
+        int size = currentPlayer.getNotDrawedTiles().size();
+        Tile lastDiscardadTile = currentPlayer.getNotDrawedTiles().get(size-1);
+        return lastDiscardadTile.toString();
     }
 
     /*
@@ -62,7 +65,10 @@ public class OkeyGame {
      * it should return the toString method of the tile so that we can print what we picked
      */
     public String getTopTile() {
-        return null;
+        Player currentPlayer = players[currentPlayerIndex];
+        int size = currentPlayer.getTiles().length;
+        Tile lastTile = currentPlayer.getTiles()[size-1];
+        return lastTile.toString();
     }
 
     /*
