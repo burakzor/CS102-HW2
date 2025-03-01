@@ -43,8 +43,8 @@ public class OkeyGame {
             {
                 players[0].getTiles()[i] = tiles[i];
                 players[j].getTiles()[i] = tiles[i+1+(14*j)];
-            }   
-        } 
+            }
+        }
     }
 
     /*
@@ -86,15 +86,15 @@ public class OkeyGame {
     }
 
     /*
-     * TODO: check if game still continues, should return true if current player -------------------Kaptan
+     * TODO: check if game still continues, should return true if current player -------------------Kaptan-- Done
      * finished the game, use isWinningHand() method of Player to decide
      */
     public boolean didGameFinish() {
-        return false;
+        return players[currentPlayerIndex].isWinningHand();
     }
 
     /*
-     * TODO: Pick a tile for the current computer player using one of the following: ---------Kaptan
+     * TODO: Pick a tile for the current computer player using one of the following: ---------Kaptan -- Done
      * - picking from the tiles array using getTopTile()
      * - picking from the lastDiscardedTile using getLastDiscardedTile()
      * You should consider if the discarded tile is useful for the computer in
@@ -103,8 +103,39 @@ public class OkeyGame {
      *     tile'ı parametreye yazar mısın (ekler misin)? !!!!! "Tile" reference yüklenmesi lazım !!!!!  --------Buraktan özel istek
      */
     public void pickTileForComputer() {
+        Player currentPlayer = players[currentPlayerIndex];
 
+        if (lastDiscardedTile != null) {
+            // Atılan taş bilgisayarın işine yarıyor mu kontrol
+            boolean isuseful = false;
+            for (Tile t : currentPlayer.getTiles()) {
+                if (t.canFormChainWith(lastDiscardedTile)) {
+                    isuseful = true;
+                    break;
+                }
+            }
+
+            if (isuseful) {
+                currentPlayer.addTile(lastDiscardedTile);
+                System.out.println(currentPlayer.getName() + " picked the discarded tile: " + lastDiscardedTile);
+                lastDiscardedTile = null; // Artık yerde taş yok
+                return;
+            }
+        }
+
+        // Eğer atılan taş işe yaramıyorsa desteden taş çek
+        Tile topTile = tiles[tiles.length - 1]; // En üstteki taşı al
+        currentPlayer.addTile(topTile);
+
+        System.out.println(currentPlayer.getName() + " picked from the tile stack: " + topTile);
+
+        // Çekmediği taşı listeye ekle
+        currentPlayer.addToNotDrawedTiles(topTile);
+
+        // Desteden taşı kaldır
+        tiles[tiles.length - 1] = null;
     }
+
 
     /*
      * TODO: Current computer player will discard the least useful tile. ---------------Burak ***Done

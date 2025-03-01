@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class Player {
     String playerName;
@@ -51,15 +51,34 @@ public class Player {
     }
 
     /*
-     * TODO: checks if this player's hand satisfies the winning condition ------------Kaptan
+     * TODO: checks if this player's hand satisfies the winning condition ------------Kaptan-- Done
      * to win this player should have 3 chains of length 4, extra tiles
      * does not disturb the winning condition
-     * 
+     *Chains can be made only using the different colors of the same number.
      * @return
      */
     public boolean isWinningHand() {
-        return false;
+        Map<Integer, Set<Integer>> numberToColors = new HashMap<>();
+
+        for (int i = 0; i < numberOfTiles; i++) {
+            Tile t = playerTiles[i];
+
+            if (t == null) continue; // Eğer null taş varsa
+
+            numberToColors
+                    .computeIfAbsent(t.getValue(), k -> new HashSet<>())
+                    .add(t.colorNameToInt());
+        }
+        int chainCount = 0;
+        for (Set<Integer> colors : numberToColors.values()) {
+            if (colors.size() >= 4) {
+                chainCount++;
+            }
+        }
+
+        return chainCount >= 3;
     }
+
 
     public int findPositionOfTile(Tile t) {
         int tilePosition = -1;
