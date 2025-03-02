@@ -109,10 +109,10 @@ public class OkeyGame {
      * TODO: should randomly shuffle the tiles array before game starts -------------- Yakup
      */
     public void shuffleTiles() {
-        Random rand = new Random();
+        Random random = new Random();
         for (int i = tiles.length - 1; i > 0; i--)
         {
-            int j = rand.nextInt(i + 1);
+            int j = random.nextInt(i + 1);
             Tile temp = tiles[i];
             tiles[i] = tiles[j];
             tiles[j] = temp;
