@@ -1,5 +1,5 @@
 public class Tile {
-    
+
     int value;
     char color;
     public static final char[] COLORS = {'K', 'R', 'B', 'Y'}; // Added to discardTileForComputer()
@@ -56,6 +56,7 @@ public class Tile {
     // determines if this tile can make a chain with the given tile
     public boolean canFormChainWith(Tile t) {
 
+        if (t == null) return false;
         // can make chain if same number but different color
         if(t.getColor() != color && t.getValue() == value) {
             return true;
@@ -76,5 +77,5 @@ public class Tile {
     public char getColor() {
         return color;
     }
-    
+
 }
