@@ -80,17 +80,30 @@ public class OkeyGame {
      * it should return the toString method of the tile so that we can print what we picked
      */
     public String getTopTile() {
+        if (tiles.length == 0) {
+            System.out.println("No tiles left in the stack!");
+            return "No tile"; // veya hata yönetimi yap
+        }
+
         Player currentPlayer = players[currentPlayerIndex];
+
+        // Son taşı al
         Tile pickedTile = tiles[tiles.length - 1];
-        currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
 
-        Tile[] nTiles = Arrays.copyOf(tiles, tiles.length - 1);
-        tiles = nTiles;
+        // Eğer discarded tile çekilmemişse, listeye ekleyelim
+        if (lastDiscardedTile != null) {
+            currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
+        }
 
+        // tiles dizisini güncelle (son taşı çıkar)
+        tiles = Arrays.copyOf(tiles, tiles.length - 1);
+
+        // Taşı oyuncuya ekle
         currentPlayer.addTile(pickedTile);
 
         return pickedTile.toString();
     }
+
 
     /*
      * TODO: should randomly shuffle the tiles array before game starts -------------- Yakup
