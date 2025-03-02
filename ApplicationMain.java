@@ -30,6 +30,8 @@ public class ApplicationMain {
         while(gameContinues) {
             
             int currentPlayer = game.getCurrentPlayerIndex();
+            System.out.println();
+            System.out.println("--------------------------------");
             System.out.println(game.getCurrentPlayerName() + "'s turn.");
             
             if(currentPlayer == 0) {

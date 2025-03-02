@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class OkeyGame {
@@ -64,9 +65,9 @@ public class OkeyGame {
      */
     public String getLastDiscardedTile() {
         Player currentPlayer = players[currentPlayerIndex];
-        int size = currentPlayer.getNotDrawedTiles().size();
-        Tile lastDiscardadTile = currentPlayer.getNotDrawedTiles().get(size-1);
-        return lastDiscardadTile.toString();
+
+        currentPlayer.addTile(lastDiscardedTile);
+        return lastDiscardedTile.toString();
     }
 
     /*
@@ -76,9 +77,15 @@ public class OkeyGame {
      */
     public String getTopTile() {
         Player currentPlayer = players[currentPlayerIndex];
-        int size = currentPlayer.getTiles().length;
-        Tile lastTile = currentPlayer.getTiles()[size-1];
-        return lastTile.toString();
+        Tile pickedTile = tiles[tiles.length - 1];
+        currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
+
+        Tile[] nTiles = Arrays.copyOf(tiles, tiles.length - 1);
+        tiles = nTiles;
+
+        currentPlayer.addTile(pickedTile);
+
+        return pickedTile.toString();
     }
 
     /*
@@ -128,11 +135,13 @@ public class OkeyGame {
             if (isuseful) {
                 currentPlayer.addTile(lastDiscardedTile);
                 System.out.println(currentPlayer.getName() + " picked the discarded tile: " + lastDiscardedTile);
-                lastDiscardedTile = null; // Artık yerde taş yok
+
                 return;
             }
         }
-
+        // Çekmediği taşı listeye ekle
+        currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
+        
         // Eğer atılan taş işe yaramıyorsa desteden taş çek
         Tile topTile = tiles[tiles.length - 1]; // En üstteki taşı al
         currentPlayer.addTile(topTile);
@@ -175,7 +184,7 @@ public class OkeyGame {
     }
     public void discardTileForComputer() {
         Player currentPlayer = players[currentPlayerIndex];
-        Player nextPlayer = players[currentPlayerIndex + 1];
+        Player nextPlayer = players[(currentPlayerIndex + 1) % 4];
         int[][] diffTiles = new int[4][7]; //[K-R-B-Y][1-2-3-4-5-6-7]
         int[] diffValueTiles = new int[7]; //[1-2-3-4-5-6-7]
         ArrayList<Integer> duplicateTiles = new ArrayList<Integer>();
@@ -217,18 +226,29 @@ public class OkeyGame {
             }
         }
 
+        int tileIndex;
+
+
         if (duplicateTiles.size() == 0) {
-            int tileIndex = decideWhichTileToDiscard(otherTiles, currentPlayer.getTiles(),
+            int index = decideWhichTileToDiscard(otherTiles, currentPlayer.getTiles(),
                     nextPlayer.getNotDrawedTiles(), nextPlayer.getNotDrawedTileValues());
+            tileIndex = index;
 
             currentPlayer.getAndRemoveTile(tileIndex);
         } else if (duplicateTiles.size() == 1) {
-            currentPlayer.getAndRemoveTile(duplicateTiles.get(0));
+            tileIndex = duplicateTiles.get(0);
+
         } else {
-            int tileIndex = decideWhichTileToDiscard(duplicateTiles, currentPlayer.getTiles(),
+            int index = decideWhichTileToDiscard(duplicateTiles, currentPlayer.getTiles(),
                     nextPlayer.getNotDrawedTiles(), nextPlayer.getNotDrawedTileValues());
-            currentPlayer.getAndRemoveTile(tileIndex);
+            tileIndex = index;
         }
+
+        lastDiscardedTile = currentPlayer.getTiles()[tileIndex];
+        currentPlayer.getAndRemoveTile(tileIndex);
+        System.out.println(currentPlayer.getName() + " discarded tile " + currentPlayer.getTiles()[tileIndex]);
+
+
 
     }
 
@@ -238,11 +258,13 @@ public class OkeyGame {
      * that player's tiles
      */
     public void discardTile(int tileIndex) {
-        lastDiscardedTile = players[currentPlayerIndex].getTiles()[tileIndex];
-        players[currentPlayerIndex].getTiles()[tileIndex] = null;
-        for(int i=tileIndex; i<players[currentPlayerIndex].getTiles().length - 1; i++)
+        Player currentPlayer = players[currentPlayerIndex];
+        lastDiscardedTile = currentPlayer.getTiles()[tileIndex];
+
+        currentPlayer.getAndRemoveTile(tileIndex);
+        for(int i=tileIndex; i<currentPlayer.getTiles().length - 1; i++)
         {
-            players[currentPlayerIndex].getTiles()[i] = players[currentPlayerIndex].getTiles()[i+1];
+            currentPlayer.getTiles()[i] = currentPlayer.getTiles()[i+1];
         }
         players[currentPlayerIndex].getTiles()[players[currentPlayerIndex].getTiles().length - 1] = null;
         players[currentPlayerIndex].numberOfTiles --;
