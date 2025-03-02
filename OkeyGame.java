@@ -37,13 +37,23 @@ public class OkeyGame {
      * this method assumes the tiles are already shuffled
      */
     public void distributeTilesToPlayers() {
-        for(int j=1; j<=3; j++)
-        {
-            for(int i=0; i<15; i++)
-            {
-                players[0].getTiles()[i] = tiles[i];
-                players[j].getTiles()[i] = tiles[i+1+(14*j)];
-            }
+        int tileIndex = 0;
+    
+        for (int i = 0; i < 15; i++) {
+            players[0].getTiles()[i] = tiles[tileIndex];
+            tileIndex ++;
+        }
+        for (int i = 0; i < 14; i++) {
+            players[1].getTiles()[i] = tiles[tileIndex];
+            tileIndex ++;
+        }
+        for (int i = 0; i < 14; i++) {
+            players[2].getTiles()[i] = tiles[tileIndex];
+            tileIndex ++;
+        }
+        for (int i = 0; i < 14; i++) {
+            players[3].getTiles()[i] = tiles[tileIndex];
+            tileIndex ++;
         }
     }
 
@@ -235,6 +245,7 @@ public class OkeyGame {
             players[currentPlayerIndex].getTiles()[i] = players[currentPlayerIndex].getTiles()[i+1];
         }
         players[currentPlayerIndex].getTiles()[players[currentPlayerIndex].getTiles().length - 1] = null;
+        players[currentPlayerIndex].numberOfTiles --;
     }
 
     public void displayDiscardInformation() {
