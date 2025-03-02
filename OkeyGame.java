@@ -164,47 +164,38 @@ public class OkeyGame {
     public void pickTileForComputer() {
         Player currentPlayer = players[currentPlayerIndex];
 
-        if (lastDiscardedTile != null) { // Önce null kontrolü ekleyelim
-            // Atılan taş bilgisayarın işine yarıyor mu kontrol
-            boolean isUseful = false;
+        Tile pickedTile = null; // Bilgisayarın aldığı taş
+
+        // Önce, atılan taşı değerlendirelim
+        if (lastDiscardedTile != null) {
             for (Tile t : currentPlayer.getTiles()) {
-                if (t != null && t.canFormChainWith(lastDiscardedTile)) { // Burada da null kontrolü ekleyelim
-                    isUseful = true;
+                if (t != null && t.canFormChainWith(lastDiscardedTile)) { // Null kontrolü yapalım
+                    pickedTile = lastDiscardedTile; // Eğer işe yarıyorsa al
                     break;
                 }
             }
+        }
 
-            if (isUseful) {
-                currentPlayer.addTile(lastDiscardedTile);
-                System.out.println(currentPlayer.getName() + " picked the discarded tile: " + lastDiscardedTile);
+        // Eğer atılan taş işe yaramıyorsa desteden taş çekelim
+        if (pickedTile == null) {
+            if (tiles.length > 0) { // Deste boş değilse en üstten taş al
+                pickedTile = tiles[tiles.length - 1];
+
+                // Desteden taş çektikten sonra diziyi güncelleyelim
+                tiles = Arrays.copyOf(tiles, tiles.length - 1);
+            } else {
+                System.out.println("No tiles left in the stack!");
                 return;
             }
         }
-
-        // Eğer atılan taş yoksa veya işe yaramıyorsa listeye ekleme yapılmadan devam etsin
-        if (lastDiscardedTile != null) {
-            currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
-        }
-
-        // Eğer atılan taş işe yaramıyorsa desteden taş çek
-        if (tiles.length == 0) {
-            System.out.println("No tiles left in the stack!");
-            return;
-        }
-
-        boolean end = false;
-
-        for (int i = tiles.length - 1; i > 0 && !end; i--) {
-            if (tiles[i] != null) {
-                Tile topTile = tiles[tiles.length - 1]; // En üstteki taşı al
-                currentPlayer.addTile(topTile);
-                System.out.println(currentPlayer.getName() + " picked from the tile stack: " + topTile);
-                currentPlayer.addToNotDrawedTiles(topTile);
-                tiles[tiles.length - 1] = null;
-                end = true;
-            }
+        // Eğer bilgisayar bir taş aldıysa ekleyelim
+        if (pickedTile != null) {
+            currentPlayer.addTile(pickedTile);
+            System.out.println(currentPlayer.getName() + " picked: " + pickedTile);
+            currentPlayer.addToNotDrawedTiles(pickedTile);
         }
     }
+
 
 
 
