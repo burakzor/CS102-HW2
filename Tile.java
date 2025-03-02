@@ -1,4 +1,4 @@
-public class Tile {
+public class Tile implements Comparable<Tile>{
 
     int value;
     char color;
@@ -18,7 +18,12 @@ public class Tile {
     /*
      * Compares tiles so that they can be added to the hands in order
      */
+    @Override
     public int compareTo(Tile t) {
+        if (t == null) {
+            return 1;
+        }
+
         if(colorNameToInt() < t.colorNameToInt()) {
             return -1;
         }

@@ -92,6 +92,7 @@ public class Player {
     }
 
     public void displayTiles() {
+        Arrays.sort(playerTiles, 0, numberOfTiles);
         System.out.println(playerName + "'s Tiles:");
         for (int i = 0; i < numberOfTiles; i++) {
             System.out.print(playerTiles[i].toString() + " ");
@@ -110,6 +111,7 @@ public class Player {
         char color = Tile.COLORS[colorIndex];
         for (int i = 0; i < playerTiles.length; i++) {
             Tile aTile = playerTiles[i];
+            if (aTile == null) continue;
             if (aTile.getColor() == color && aTile.getValue() == number)
                 index = i;
         }

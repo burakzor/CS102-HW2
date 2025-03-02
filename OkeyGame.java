@@ -80,26 +80,26 @@ public class OkeyGame {
      * it should return the toString method of the tile so that we can print what we picked
      */
     public String getTopTile() {
-        if (tiles.length == 0) {
-            System.out.println("No tiles left in the stack!");
-            return "No tile"; // veya hata yönetimi yap
+        if (tiles == null || tiles.length == 0) {
+            System.out.println("Error: No more tiles left in the stack!");
+            return "No more tiles"; // Alternatif olarak bir mesaj dönebiliriz
         }
 
         Player currentPlayer = players[currentPlayerIndex];
+        Tile pickedTile = tiles[tiles.length - 1]; // En üstteki taşı al
 
-        // Son taşı al
-        Tile pickedTile = tiles[tiles.length - 1];
-
-        // Eğer discarded tile çekilmemişse, listeye ekleyelim
-        if (lastDiscardedTile != null) {
-            currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
+        if (pickedTile == null) {
+            System.out.println("Error: Picked tile is null!");
+            return "Invalid tile";
         }
 
-        // tiles dizisini güncelle (son taşı çıkar)
-        tiles = Arrays.copyOf(tiles, tiles.length - 1);
+        currentPlayer.addToNotDrawedTiles(lastDiscardedTile);
 
-        // Taşı oyuncuya ekle
-        currentPlayer.addTile(pickedTile);
+        // Yeni taş dizisini bir eksilterek oluştur
+        Tile[] nTiles = Arrays.copyOf(tiles, tiles.length - 1);
+        tiles = nTiles;
+
+        currentPlayer.addTile(pickedTile); // Oyuncuya taşı ekle
 
         return pickedTile.toString();
     }
@@ -124,7 +124,32 @@ public class OkeyGame {
      * finished the game, use isWinningHand() method of Player to decide
      */
     public boolean didGameFinish() {
-        return players[currentPlayerIndex].isWinningHand();
+        if (players[currentPlayerIndex].isWinningHand()) {
+            System.out.println(players[currentPlayerIndex].getName() + " has won the game!");
+            return true;
+        }
+        else if(players[(currentPlayerIndex + 1) % 4].isWinningHand()) {
+            System.out.println(players[(currentPlayerIndex + 1) % 4].getName() + " has won the game!");
+            return true;
+        }
+        else if(players[(currentPlayerIndex + 2) % 4].isWinningHand()) {
+            System.out.println(players[(currentPlayerIndex + 2) % 4].getName() + " has won the game!");
+            return true;
+        }
+        else if(players[(currentPlayerIndex + 3) % 4].isWinningHand()) {
+            System.out.println(players[(currentPlayerIndex + 3) % 4].getName() + " has won the game!");
+            return true;
+        }
+        //no tile left in the stack
+        else if (tiles.length == 0) {
+            System.out.println("No tiles left in the stack!");
+            System.out.println("It is a draw!");
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
     /*
@@ -217,6 +242,7 @@ public class OkeyGame {
 
 
         for (Tile aTile : currentPlayer.getTiles()) {
+            if (aTile == null) continue;
             int colorIndex;
             if (aTile.getColor() == 'K') colorIndex = 0;
             else if (aTile.getColor() == 'R') colorIndex = 1;
