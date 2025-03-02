@@ -260,13 +260,7 @@ public class OkeyGame {
     public void discardTile(int tileIndex) {
         Player currentPlayer = players[currentPlayerIndex];
         lastDiscardedTile = currentPlayer.getTiles()[tileIndex];
-
         currentPlayer.getAndRemoveTile(tileIndex);
-        for(int i=tileIndex; i<currentPlayer.getTiles().length - 1; i++)
-        {
-            currentPlayer.getTiles()[i] = currentPlayer.getTiles()[i+1];
-        }
-        players[currentPlayerIndex].getTiles()[players[currentPlayerIndex].getTiles().length - 1] = null;
         players[currentPlayerIndex].numberOfTiles --;
     }
 
