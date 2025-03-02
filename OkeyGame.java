@@ -167,16 +167,15 @@ public class OkeyGame {
             return;
         }
 
-        Tile topTile = tiles[tiles.length - 1]; // En üstteki taşı al
-
-        if (topTile != null) { // topTile null olup olmadığını kontrol edelim
-            currentPlayer.addTile(topTile);
-            System.out.println(currentPlayer.getName() + " picked from the tile stack: " + topTile);
-            currentPlayer.addToNotDrawedTiles(topTile);
+        for (int i = tiles.length - 1; i > 0; i--) {
+            if (tiles[i] != null) {
+                Tile topTile = tiles[tiles.length - 1]; // En üstteki taşı al
+                currentPlayer.addTile(topTile);
+                System.out.println(currentPlayer.getName() + " picked from the tile stack: " + topTile);
+                currentPlayer.addToNotDrawedTiles(topTile);
+                tiles[tiles.length - 1] = null;
+            }
         }
-
-        // Desteden taşı kaldır (null olup olmadığını kontrol edelim)
-        tiles[tiles.length - 1] = null;
     }
 
 
