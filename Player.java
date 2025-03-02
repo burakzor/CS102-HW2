@@ -95,7 +95,7 @@ public class Player {
         Arrays.sort(playerTiles, 0, numberOfTiles);
         System.out.println(playerName + "'s Tiles:");
         for (int i = 0; i < numberOfTiles; i++) {
-            System.out.print(playerTiles[i].toString() + " ");
+            if (playerTiles[i] != null) System.out.print(playerTiles[i].toString() + " ");
         }
         System.out.println();
     }

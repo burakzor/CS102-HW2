@@ -192,13 +192,16 @@ public class OkeyGame {
             return;
         }
 
-        for (int i = tiles.length - 1; i > 0; i--) {
+        boolean end = false;
+
+        for (int i = tiles.length - 1; i > 0 && !end; i--) {
             if (tiles[i] != null) {
                 Tile topTile = tiles[tiles.length - 1]; // En üstteki taşı al
                 currentPlayer.addTile(topTile);
                 System.out.println(currentPlayer.getName() + " picked from the tile stack: " + topTile);
                 currentPlayer.addToNotDrawedTiles(topTile);
                 tiles[tiles.length - 1] = null;
+                end = true;
             }
         }
     }
